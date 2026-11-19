@@ -3,3 +3,4 @@
 coverage==7.17.3
 ruff==0.17.5
 vulture==2.16
+pypdf==7.1.1

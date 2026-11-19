@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Secure Chat Application using AES Encryption - Project Report</title>
+<style>
+  :root {
+    --green: #00a884; --green-dark: #008069; --green-soft: #e7f8f3; --ink: #14222b; --ink-2: #44535e;
+    --muted: #7a8790; --line: #dde3e7; --panel: #f5f7f8; --navy: #0f2f44; --red: #d64545; --amber: #b7791f;
+  }
+  @page { size: A4;
+          @bottom-left { content: "SecureChat · Applied Cryptography Course Project · NIT Patna"; font: 8pt "Segoe UI", sans-serif; color: #8a979f; }
+          @bottom-right { content: counter(page); font: 8pt "Segoe UI", sans-serif; color: #8a979f; } }
+  @page cover { margin: 0; @bottom-left { content: none; } @bottom-right { content: none; } }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; font-family: "Segoe UI", "Segoe UI Variable Text", Arial, sans-serif; font-size: 10.6pt;
+         line-height: 1.55; color: var(--ink); }
+  h1, h2, h3 { font-family: "Segoe UI Semibold", "Segoe UI", sans-serif; font-weight: 600; color: var(--navy); }
+  h1 { font-size: 22pt; margin: 0 0 4mm; padding-bottom: 3mm; border-bottom: 3px solid var(--green);
+       break-before: page; display: flex; align-items: baseline; gap: 4mm; }
+  h1 .num { color: var(--green); font-size: 26pt; }
+  h2 { font-size: 13.5pt; margin: 7mm 0 2mm; break-after: avoid; }
+  h3 { font-size: 11.2pt; margin: 4mm 0 1.5mm; break-after: avoid; }
+  p { margin: 0 0 2.6mm; }
+  .lead { font-size: 11.6pt; color: var(--ink-2); }
+  ul, ol { margin: 0 0 3mm; padding-left: 6mm; }
+  li { margin-bottom: 1.2mm; }
+  strong { color: var(--navy); }
+  .muted { color: var(--muted); }
+  .small { font-size: 9pt; }
+  code { font-family: Consolas, monospace; font-size: 9.5pt; background: var(--panel); padding: 0 1.2mm;
+         border-radius: 2px; }
+
+  /* ---------- cover ---------- */
+  .cover { page: cover; height: 297mm; position: relative; overflow: hidden; color: #fff;
+           background: linear-gradient(160deg, #00a884 0%, #00806a 45%, #0b3b46 100%); }
+  .cover .inner { position: absolute; inset: 22mm 20mm 20mm 20mm; display: flex; flex-direction: column; }
+  .cover .inst { font-size: 15pt; font-weight: 600; letter-spacing: .3px; }
+  .cover .dept { font-size: 10.5pt; opacity: .85; }
+  .cover .course { margin-top: 13mm; display: inline-block; align-self: flex-start; padding: 1.6mm 4mm;
+                   border: 1px solid rgba(255,255,255,.55); border-radius: 20px; font-size: 9.5pt;
+                   letter-spacing: 1.5px; text-transform: uppercase; }
+  .cover .title { margin-top: 6mm; font-size: 31pt; line-height: 1.15; font-weight: 700; }
+  .cover .subtitle { margin-top: 4mm; font-size: 13pt; opacity: .92; max-width: 150mm; }
+  .cover .shot { margin-top: 10mm; width: 100%; border-radius: 6px; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+  .cover .meta { margin-top: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 4mm 10mm;
+                 background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.25); border-radius: 8px;
+                 padding: 6mm 7mm; }
+  .cover .meta .k { font-size: 8.5pt; text-transform: uppercase; letter-spacing: 1.2px; opacity: .75; }
+  .cover .meta .v { font-size: 12pt; font-weight: 600; }
+
+  /* ---------- contents ---------- */
+  .toc { break-before: page; }
+  .toc h1 { break-before: auto; }
+  .toc ol { list-style: none; padding: 0; margin-top: 6mm; }
+  .toc li { display: flex; gap: 4mm; padding: 2.6mm 0; border-bottom: 1px dashed var(--line); font-size: 11.5pt; }
+  .toc .n { color: var(--green); font-weight: 700; width: 9mm; }
+  .toc .d { color: var(--muted); font-size: 9.5pt; margin-left: auto; text-align: right; max-width: 85mm; }
+
+  /* ---------- building blocks ---------- */
+  figure { margin: 4mm 0 5mm; break-inside: avoid; text-align: center; }
+  figure img { max-width: 100%; border-radius: 5px; border: 1px solid var(--line); }
+  figure img.console { border: none; }
+  figure img.graph { border: none; }
+  figcaption { margin-top: 2mm; font-size: 9pt; color: var(--muted); }
+  figcaption b { color: var(--ink-2); }
+  .row { display: flex; gap: 5mm; align-items: flex-start; break-inside: avoid; }
+  .row > figure { flex: 1; margin-top: 2mm; }
+  table { width: 100%; border-collapse: collapse; margin: 2mm 0 4mm; font-size: 9.8pt; break-inside: avoid; }
+  th { background: var(--navy); color: #fff; text-align: left; font-weight: 600; padding: 2mm 2.6mm; }
+  td { padding: 2mm 2.6mm; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:nth-child(even) td { background: #fafbfc; }
+  .ok { color: var(--green-dark); font-weight: 700; }
+  .bad { color: var(--red); font-weight: 700; }
+  .callout { background: var(--green-soft); border-left: 4px solid var(--green); padding: 3mm 4mm;
+             border-radius: 0 6px 6px 0; margin: 3mm 0 4mm; break-inside: avoid; }
+  .callout.warn { background: #fff7e6; border-color: #e3a008; }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; margin: 3mm 0 4mm; }
+  .card { border: 1px solid var(--line); border-radius: 8px; padding: 3.5mm 4mm; break-inside: avoid;
+          background: #fff; }
+  .card h3 { margin-top: 0; display: flex; align-items: center; gap: 2mm; }
+  .card .tag { margin-left: auto; font-size: 7.8pt; background: var(--green-soft); color: var(--green-dark);
+               padding: .5mm 2mm; border-radius: 10px; font-weight: 600; }
+  .card p { margin-bottom: 1.4mm; font-size: 9.8pt; }
+  .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; margin: 3mm 0 5mm; }
+  .tile { background: var(--panel); border-radius: 8px; padding: 3.5mm 3mm; text-align: center; break-inside: avoid; }
+  .tile .v { font-size: 17pt; font-weight: 700; color: var(--green-dark); line-height: 1.2; }
+  .tile .l { font-size: 8.6pt; color: var(--ink-2); }
+  .features { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3mm; margin: 3mm 0; }
+  .feature { background: var(--panel); border-radius: 8px; padding: 3mm 3.5mm; font-size: 9.5pt; break-inside: avoid; }
+  .feature .t { font-weight: 700; color: var(--navy); font-size: 10.2pt; margin-bottom: .8mm; }
+  .steps { counter-reset: step; list-style: none; padding: 0; }
+  .steps li { counter-increment: step; position: relative; padding: 0 0 2.5mm 11mm; }
+  .steps li::before { content: counter(step); position: absolute; left: 0; top: -.4mm; width: 7mm; height: 7mm;
+                      border-radius: 50%; background: var(--green); color: #fff; font-weight: 700;
+                      text-align: center; line-height: 7mm; font-size: 9.5pt; }
+  .packet { display: flex; border-radius: 6px; overflow: hidden; margin: 3mm 0 1.5mm; font-size: 9pt;
+            text-align: center; color: #fff; break-inside: avoid; }
+  .packet div { padding: 3mm 2mm; }
+  .packet .s { font-size: 7.8pt; opacity: .85; display: block; }
+  .diagram { width: 100%; margin: 2mm 0; }
+  .pagebreak { break-before: page; }
+  .compact table { font-size: 9.2pt; margin-bottom: 0; }
+  .compact td, .compact th { padding: 1.3mm 2.4mm; }
+  table.tasks td { padding: 1.4mm 2.4mm; font-size: 9.2pt; line-height: 1.45; }
+  /* the cover and the body are printed separately (see build_pdf.py) */
+  body.only-cover > :not(.cover) { display: none !important; }
+  body.no-cover > .cover { display: none; }
+  body.no-cover > .toc { break-before: auto; }
+  .keep { break-inside: avoid; }
+</style>
+</head>
+<body>
+
+<!-- ======================================================================= COVER -->
+<section class="cover">
+  <div class="inner">
+    <div class="inst">National Institute of Technology Patna</div>
+    <div class="dept">Department of Computer Science and Engineering</div>
+    <div class="course">Applied Cryptography · Course Project</div>
+    <div class="title">Secure Chat Application<br>using AES Encryption</div>
+    <div class="subtitle">SecureChat — a WhatsApp-style messenger in which every message is encrypted and
+      authenticated with AES-256-GCM, built with Python, socket programming and PyCryptodome.</div>
+    <img class="shot" src="docs/screenshots/04_main_window.png" alt="SecureChat main window">
+    <div class="meta">
+      <div><div class="k">Submitted by</div><div class="v">Anshuman Ravi</div></div>
+      <div><div class="k">Submitted to</div><div class="v">Dr. Kakali Chatterjee</div></div>
+      <div><div class="k">Roll number · Class</div><div class="v">2306022 · CSE-1</div></div>
+      <div><div class="k">Date</div><div class="v">{{DATE}}</div></div>
+      <div style="grid-column: 1 / span 2"><div class="k">Source code</div><div class="v">{{GITHUB}}</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================================= CONTENTS -->
+<section class="toc">
+  <h1>Contents</h1>
+  <ol>
+    <li><span class="n">1</span>Project Overview<span class="d">goal, tasks, hardware and software</span></li>
+    <li><span class="n">2</span>The Application<span class="d">what SecureChat looks like and can do</span></li>
+    <li><span class="n">3</span>How It Works<span class="d">architecture, secure handshake, packets</span></li>
+    <li><span class="n">4</span>Cryptography Used<span class="d">AES-GCM, RSA-OAEP, HKDF, PBKDF2, ECDH — and why</span></li>
+    <li><span class="n">5</span>Preventing Unauthorized Access<span class="d">threats, defences and live attack demos</span></li>
+    <li><span class="n">6</span>Performance Evaluation<span class="d">what the security costs, measured</span></li>
+    <li><span class="n">7</span>Running on Two Laptops<span class="d">set-up on a shared Wi-Fi or hotspot</span></li>
+    <li><span class="n">8</span>Testing and Quality<span class="d">287 automated tests, security review</span></li>
+    <li><span class="n">9</span>Limitations and Future Work<span class="d">what is not covered yet</span></li>
+    <li><span class="n">10</span>Conclusion<span class="d">summary of results</span></li>
+    <li><span class="n">&nbsp;</span>References and Appendix<span class="d">sources, how to run</span></li>
+  </ol>
+  <div class="callout" style="margin-top:10mm">
+    <strong>In one paragraph.</strong> SecureChat lets two or more laptops on the same network chat through a
+    familiar WhatsApp-style app. Each connection starts with an RSA-2048 key exchange that produces a fresh
+    AES-256 key; from then on every packet is encrypted <em>and</em> authenticated with AES-256-GCM, carries
+    a sequence number and timestamp against replay, and is checked before use. Passwords are stored as salted
+    PBKDF2 hashes, and an optional end-to-end mode keeps even the server from reading one-to-one chats. Built-in
+    attack tools prove that sniffing, tampering, replaying and password guessing all fail, and benchmarks show
+    the whole protection adds well under a millisecond per message.
+  </div>
+</section>
+
+<!-- ======================================================================= 1 OVERVIEW -->
+<h1><span class="num">1</span>Project Overview</h1>
+<p class="lead">On a shared network such as a college Wi-Fi, anyone between two computers can capture, change
+or resend the data they exchange. A chat program that sends plain text exposes every message and every
+password. The aim of this project was to build a chat application that stays private and trustworthy even
+on such a network — and to measure what that protection costs.</p>
+<div class="callout"><strong>Project goal:</strong> develop a secure client–server chat application using AES
+encryption.</div>
+
+<h2>Project tasks and how they were achieved</h2>
+<table class="tasks">
+  <tr><th style="width:26%">Required task</th><th>How SecureChat does it</th><th style="width:9%">Status</th></tr>
+  <tr><td><strong>Client–server communication</strong></td><td>A multi-threaded TCP server (Python <code>socket</code> +
+    <code>threading</code>) relays messages between clients on different laptops. Each connection begins with a
+    secure handshake, and clients can find the server automatically on the local network.</td><td class="ok">✓ Done</td></tr>
+  <tr><td><strong>AES encryption</strong></td><td>Every packet after the handshake — messages, receipts, typing
+    notifications, file chunks — is encrypted with <strong>AES-256-GCM</strong> using a fresh random nonce and a
+    session key unique to that connection.</td><td class="ok">✓ Done</td></tr>
+  <tr><td><strong>AES decryption</strong></td><td>The receiver decrypts each packet and verifies its 128-bit
+    <strong>authentication tag</strong> first. A packet that was modified in any way is rejected and never
+    shown.</td><td class="ok">✓ Done</td></tr>
+  <tr><td><strong>Secure messaging</strong></td><td>RSA-2048 key exchange with server fingerprint checking, replay
+    protection, hashed passwords with lockout, encrypted offline messages and history, and an optional
+    <strong>end-to-end</strong> mode. Attack demonstrations show unauthorized access fails.</td><td class="ok">✓ Done</td></tr>
+  <tr><td><strong>Performance evaluation</strong></td><td>Benchmarks of AES modes, key sizes, message sizes,
+    handshake and password-hashing cost, plus latency, throughput and scalability of encrypted vs. plain-text
+    chat, with graphs.</td><td class="ok">✓ Done</td></tr>
+</table>
+
+<h2>Hardware and software</h2>
+<div class="row compact">
+<table style="flex:1">
+  <tr><th colspan="2">Hardware</th></tr>
+  <tr><td>Computers</td><td>Two laptops on the same Wi-Fi or hotspot (one also runs the server)</td></tr>
+  <tr><td>Testing</td><td>Also runs fully on one laptop</td></tr>
+  <tr><td>Test machine</td><td>Intel Core i5-13500H, 16 GB RAM, Windows 11</td></tr>
+</table>
+<table style="flex:1">
+  <tr><th colspan="2">Software</th></tr>
+  <tr><td>Language</td><td>Python 3.13</td></tr>
+  <tr><td>Networking</td><td>Socket programming (TCP, UDP)</td></tr>
+  <tr><td>Cryptography</td><td>PyCryptodome 4.5</td></tr>
+  <tr><td>User interface</td><td>PySide6 (Qt 6)</td></tr>
+  <tr><td>Storage</td><td>SQLite</td></tr>
+  <tr><td>Evaluation</td><td>matplotlib, psutil, pytest</td></tr>
+</table>
+</div>
+
+<!-- ======================================================================= 2 APPLICATION -->
+<h1><span class="num">2</span>The Application</h1>
+<p class="lead">SecureChat is a full desktop messenger modelled on WhatsApp Desktop, so the security work sits
+inside something people would actually use.</p>
+
+<div class="features">
+  <div class="feature"><div class="t">💬 Chats and groups</div>One-to-one and group chats, online and "last seen"
+    status, <em>typing…</em> indicator.</div>
+  <div class="feature"><div class="t">✓✓ Delivery ticks</div>One grey tick (server has it), two grey ticks
+    (delivered), two blue ticks (read).</div>
+  <div class="feature"><div class="t">📎 Photos and files</div>Images and documents up to 25 MB, each verified with
+    SHA-256 on arrival.</div>
+  <div class="feature"><div class="t">🔐 Verify the server</div>The server's key fingerprint is shown on first
+    connection and remembered afterwards.</div>
+  <div class="feature"><div class="t">🛡️ End-to-end mode</div>One-to-one chats the server itself cannot read, with
+    a 60-digit security code.</div>
+  <div class="feature"><div class="t">🌓 Comfort</div>Light and dark themes, emoji, search, notifications, automatic
+    reconnect, offline messages.</div>
+</div>
+
+<div class="row">
+  <figure style="flex:1.05"><img src="docs/screenshots/01_login.png" alt="Login">
+    <figcaption><b>Figure 2.1</b> — Login screen. <em>Find server on LAN</em> locates the server automatically.</figcaption></figure>
+  <figure style="flex:.95"><img src="docs/screenshots/02_fingerprint.png" alt="Fingerprint">
+    <figcaption><b>Figure 2.2</b> — First connection: compare the server's key fingerprint with the server
+    window to rule out a man-in-the-middle.</figcaption></figure>
+</div>
+
+<figure><img src="docs/screenshots/04_main_window.png" alt="Main window">
+  <figcaption><b>Figure 2.3</b> — A conversation: blue ticks show Priya has read the messages, the header shows
+  she is typing, and the yellow banner confirms the chat is end-to-end encrypted.</figcaption></figure>
+
+<figure><img src="docs/screenshots/06_group_chat.png" alt="Group chat">
+  <figcaption><b>Figure 2.4</b> — A group chat. Each message is re-encrypted for every member with that member's own
+  session key; blue ticks appear only when everyone has read it.</figcaption></figure>
+
+<figure><img src="docs/screenshots/07_file_sharing.png" alt="File sharing">
+  <figcaption><b>Figure 2.5</b> — A photo and a PDF received. Files travel in 64 KB encrypted chunks and are kept only
+  if their SHA-256 hash matches.</figcaption></figure>
+
+<figure><img src="docs/screenshots/05_dark_mode.png" alt="Dark mode">
+  <figcaption><b>Figure 2.6</b> — The same conversation in dark mode.</figcaption></figure>
+
+<!-- ======================================================================= 3 HOW IT WORKS -->
+<h1><span class="num">3</span>How It Works</h1>
+<p class="lead">A central server relays messages between the apps. The network in between is assumed to be
+hostile: everything that crosses it is encrypted and authenticated.</p>
+
+<h2>Architecture</h2>
+<svg class="diagram" viewBox="0 0 760 330" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#00a884"/></marker>
+  </defs>
+  <!-- PC boxes -->
+  <rect x="10" y="20" width="200" height="200" rx="12" fill="#f5f7f8" stroke="#dde3e7"/>
+  <text x="110" y="45" text-anchor="middle" font-size="14" font-weight="600" fill="#0f2f44">Laptop 1 — User A</text>
+  <rect x="30" y="60" width="160" height="60" rx="8" fill="#fff" stroke="#00a884"/>
+  <text x="110" y="85" text-anchor="middle" font-size="12.5" font-weight="600" fill="#14222b">SecureChat app</text>
+  <text x="110" y="103" text-anchor="middle" font-size="10.5" fill="#44535e">WhatsApp-style GUI</text>
+  <rect x="30" y="135" width="160" height="65" rx="8" fill="#fff" stroke="#dde3e7"/>
+  <text x="110" y="158" text-anchor="middle" font-size="11" fill="#14222b">Encrypted history</text>
+  <text x="110" y="175" text-anchor="middle" font-size="10" fill="#44535e">AES-GCM, key from</text>
+  <text x="110" y="189" text-anchor="middle" font-size="10" fill="#44535e">the user's password</text>
+
+  <rect x="550" y="20" width="200" height="200" rx="12" fill="#f5f7f8" stroke="#dde3e7"/>
+  <text x="650" y="45" text-anchor="middle" font-size="14" font-weight="600" fill="#0f2f44">Laptop 2 — User B</text>
+  <rect x="570" y="60" width="160" height="60" rx="8" fill="#fff" stroke="#00a884"/>
+  <text x="650" y="85" text-anchor="middle" font-size="12.5" font-weight="600" fill="#14222b">SecureChat app</text>
+  <text x="650" y="103" text-anchor="middle" font-size="10.5" fill="#44535e">WhatsApp-style GUI</text>
+  <rect x="570" y="135" width="160" height="65" rx="8" fill="#fff" stroke="#dde3e7"/>
+  <text x="650" y="158" text-anchor="middle" font-size="11" fill="#14222b">Encrypted history</text>
+  <text x="650" y="175" text-anchor="middle" font-size="10" fill="#44535e">AES-GCM, key from</text>
+  <text x="650" y="189" text-anchor="middle" font-size="10" fill="#44535e">the user's password</text>
+
+  <!-- server -->
+  <rect x="270" y="20" width="220" height="200" rx="12" fill="#0f2f44"/>
+  <text x="380" y="46" text-anchor="middle" font-size="14" font-weight="600" fill="#fff">SecureChat server</text>
+  <text x="380" y="63" text-anchor="middle" font-size="10" fill="#9fc3d6">(runs on Laptop 1 or any PC)</text>
+  <g font-size="10.5" fill="#e6f1f6">
+    <text x="290" y="90">• RSA-2048 key pair (encrypted file)</text>
+    <text x="290" y="110">• one AES-256 session key per client</text>
+    <text x="290" y="130">• login: PBKDF2 hashes + lockout</text>
+    <text x="290" y="150">• routes chats, groups, files, ticks</text>
+    <text x="290" y="170">• offline messages stored encrypted</text>
+    <text x="290" y="190">• security log of every attack</text>
+  </g>
+
+  <!-- links -->
+  <line x1="190" y1="90" x2="268" y2="90" stroke="#00a884" stroke-width="3" marker-end="url(#a)" marker-start="url(#a)"/>
+  <line x1="570" y1="90" x2="492" y2="90" stroke="#00a884" stroke-width="3" marker-end="url(#a)" marker-start="url(#a)"/>
+  <text x="229" y="80" text-anchor="middle" font-size="9.5" fill="#008069" font-weight="600">AES-256-GCM</text>
+  <text x="531" y="80" text-anchor="middle" font-size="9.5" fill="#008069" font-weight="600">AES-256-GCM</text>
+
+  <!-- attacker -->
+  <rect x="250" y="250" width="260" height="66" rx="10" fill="#fdecec" stroke="#d64545" stroke-dasharray="5 4"/>
+  <text x="380" y="275" text-anchor="middle" font-size="12.5" font-weight="600" fill="#b42318">Attacker on the Wi-Fi</text>
+  <text x="380" y="295" text-anchor="middle" font-size="10.5" fill="#7a2e2e">can capture, change and replay packets —</text>
+  <text x="380" y="309" text-anchor="middle" font-size="10.5" fill="#7a2e2e">but sees only ciphertext, and every change is detected</text>
+  <path d="M229,100 L229,283 L248,283" fill="none" stroke="#d64545" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <path d="M531,100 L531,283 L512,283" fill="none" stroke="#d64545" stroke-width="1.5" stroke-dasharray="4 4"/>
+</svg>
+<p class="muted small" style="text-align:center">Figure 3.1 — The parts of the system and where the attacker sits.</p>
+
+<p>Every client has its own encrypted connection to the server. When User A sends a message to User B, the
+server decrypts it with A's session key, checks it, and re-encrypts it with B's key — so the bytes on the two
+connections look completely different. In end-to-end mode the message is additionally sealed with a key only
+A and B know, and the server simply passes it on.</p>
+
+<h2>The secure handshake</h2>
+<p>Before any chatting, client and server agree on a fresh secret key over the open network:</p>
+<svg class="diagram" style="width:86%; display:block; margin:0 auto" viewBox="0 0 760 330" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, sans-serif">
+  <defs>
+    <marker id="r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0f2f44"/></marker>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#00a884"/></marker>
+  </defs>
+  <rect x="60" y="8" width="130" height="34" rx="8" fill="#0f2f44"/>
+  <text x="125" y="30" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">Client (app)</text>
+  <rect x="570" y="8" width="130" height="34" rx="8" fill="#0f2f44"/>
+  <text x="635" y="30" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">Server</text>
+  <line x1="125" y1="42" x2="125" y2="325" stroke="#c4cdd3" stroke-dasharray="4 4"/>
+  <line x1="635" y1="42" x2="635" y2="325" stroke="#c4cdd3" stroke-dasharray="4 4"/>
+  <g font-size="11.5">
+    <line x1="633" y1="70" x2="128" y2="70" stroke="#0f2f44" stroke-width="2" marker-end="url(#r)"/>
+    <text x="380" y="62" text-anchor="middle" fill="#14222b"><tspan font-weight="600">① Public RSA-2048 key</tspan> + a fresh random salt</text>
+    <rect x="10" y="84" width="230" height="40" rx="6" fill="#e7f8f3"/>
+    <text x="125" y="100" text-anchor="middle" font-size="10.5" fill="#14222b">② Check the key's fingerprint, then</text>
+    <text x="125" y="116" text-anchor="middle" font-size="10.5" fill="#14222b">pick a random 256-bit secret</text>
+    <line x1="127" y1="148" x2="632" y2="148" stroke="#0f2f44" stroke-width="2" marker-end="url(#r)"/>
+    <text x="380" y="140" text-anchor="middle" fill="#14222b"><tspan font-weight="600">③ The secret, locked with RSA-OAEP</tspan> (only the server can open it)</text>
+    <rect x="200" y="164" width="360" height="40" rx="6" fill="#0f2f44"/>
+    <text x="380" y="181" text-anchor="middle" font-size="11" fill="#fff" font-weight="600">④ Both compute the session key = HKDF-SHA256(secret, salt)</text>
+    <text x="380" y="197" text-anchor="middle" font-size="10" fill="#9fc3d6">the key itself never crosses the network</text>
+    <line x1="633" y1="232" x2="128" y2="232" stroke="#00a884" stroke-width="2" marker-end="url(#g)"/>
+    <text x="380" y="224" text-anchor="middle" fill="#008069"><tspan font-weight="600">⑤ "Handshake OK"</tspan> encrypted with the new key — proves the server has it</text>
+    <line x1="127" y1="270" x2="632" y2="270" stroke="#00a884" stroke-width="2" marker-end="url(#g)"/>
+    <text x="380" y="262" text-anchor="middle" fill="#008069"><tspan font-weight="600">⑥ Log in / register</tspan> — the password travels only inside the encryption</text>
+    <line x1="633" y1="306" x2="128" y2="306" stroke="#00a884" stroke-width="2" marker-end="url(#g)"/>
+    <text x="380" y="298" text-anchor="middle" fill="#008069"><tspan font-weight="600">⑦ Every later packet</tspan>: AES-256-GCM in both directions</text>
+  </g>
+</svg>
+<p class="muted small" style="text-align:center">Figure 3.2 — The handshake. Green arrows are already encrypted.</p>
+
+<p>RSA is used <strong>only once</strong>, to carry a small random secret; fast AES protects everything after
+that. Because the server adds a new salt every time, every connection ends up with a different key — even a
+complete recording of an old session is useless later.</p>
+
+<h2>What one packet looks like</h2>
+<div class="packet">
+  <div style="flex:1.2;background:#5b6b75">length<span class="s">4 bytes</span></div>
+  <div style="flex:2;background:#0f2f44">nonce<span class="s">12 random bytes</span></div>
+  <div style="flex:6;background:#00a884">encrypted message<span class="s">type · sequence number · timestamp · content</span></div>
+  <div style="flex:2.4;background:#008069">auth tag<span class="s">16 bytes</span></div>
+</div>
+<p class="muted small" style="text-align:center">Figure 3.3 — Even the message <em>type</em> is inside the encryption,
+so an eavesdropper cannot tell a chat message from a typing notification. Overhead: 32 bytes per packet.</p>
+
+<figure><img class="console" src="docs/screenshots/03_server_console.png" alt="Server console">
+  <figcaption><b>Figure 3.4</b> — The real server window: the address other laptops use, the key fingerprint, two
+  users connecting securely, and one chat message arriving and being forwarded — only ciphertext ever
+  appears.</figcaption></figure>
+
+<!-- ======================================================================= 4 CRYPTOGRAPHY -->
+<h1><span class="num">4</span>Cryptography Used</h1>
+<p class="lead">Each building block was chosen for a specific job. Here is what each one does, in plain
+words, and why it was chosen.</p>
+
+<div class="cards">
+  <div class="card"><h3>AES-256-GCM <span class="tag">every message</span></h3>
+    <p><strong>What:</strong> the AES block cipher with a 256-bit key in Galois/Counter Mode — encryption plus
+    a 128-bit authentication tag in one step (an "AEAD" cipher).</p>
+    <p><strong>Why:</strong> it gives secrecy <em>and</em> tamper detection together, needs no padding, is
+    hardware-accelerated, and is the cipher TLS 1.3 uses. A fresh random 96-bit nonce is used for every packet,
+    because reusing one would break GCM.</p></div>
+  <div class="card"><h3>RSA-2048 with OAEP <span class="tag">once per connection</span></h3>
+    <p><strong>What:</strong> public-key encryption — anyone can lock data with the server's public key, only the
+    server can unlock it.</p>
+    <p><strong>Why:</strong> it solves the "how do we agree on a key over an open network" problem. OAEP padding
+    makes it randomised and secure against chosen-ciphertext attacks; 2048 bits gives ≈112-bit security.</p></div>
+  <div class="card"><h3>HKDF-SHA256 <span class="tag">key derivation</span></h3>
+    <p><strong>What:</strong> turns a random secret (plus the server's salt) into a proper AES key.</p>
+    <p><strong>Why:</strong> both sides contribute randomness, every session gets a different key, and separate
+    keys can be derived for separate jobs instead of reusing one key everywhere.</p></div>
+  <div class="card"><h3>PBKDF2-HMAC-SHA256 <span class="tag">passwords</span></h3>
+    <p><strong>What:</strong> a deliberately slow, salted password hash — 200,000 rounds of HMAC-SHA256.</p>
+    <p><strong>Why:</strong> the server never stores passwords. If its database were stolen, each password guess
+    would cost an attacker as much as a real login: only about 74 guesses per second per CPU core.</p></div>
+  <div class="card"><h3>ECDH on P-256 <span class="tag">end-to-end mode</span></h3>
+    <p><strong>What:</strong> elliptic-curve Diffie–Hellman — two users combine their own private key with the
+    other's public key and both arrive at the same secret.</p>
+    <p><strong>Why:</strong> the shared key is never sent anywhere, so the server can relay messages but never
+    read them. A 60-digit security code lets users check nobody swapped a key.</p></div>
+  <div class="card"><h3>SHA-256 and HMAC <span class="tag">integrity</span></h3>
+    <p><strong>What:</strong> cryptographic fingerprints of data.</p>
+    <p><strong>Why:</strong> used to identify the server's key (its fingerprint), to verify whole files after
+    transfer, and to hide contact names in the local history file.</p></div>
+</div>
+
+<h2>Why AES-GCM and not another AES mode?</h2>
+<table>
+  <tr><th>Mode</th><th>How it works</th><th>Detects tampering?</th><th>Verdict</th></tr>
+  <tr><td><strong>ECB</strong></td><td>Each 16-byte block encrypted separately — identical blocks give identical
+    ciphertext, so patterns show through (the famous "ECB penguin")</td><td class="bad">No</td><td class="bad">Insecure</td></tr>
+  <tr><td><strong>CBC</strong></td><td>Blocks chained together with a random IV; needs padding and a separate HMAC,
+    and mistakes lead to padding-oracle attacks</td><td>Only with an extra HMAC</td><td>Acceptable, slower</td></tr>
+  <tr><td><strong>CTR</strong></td><td>Turns AES into a stream cipher; fast, but flipping a ciphertext bit flips the
+    same plaintext bit unnoticed</td><td class="bad">No</td><td class="bad">Not enough alone</td></tr>
+  <tr><td><strong>GCM</strong></td><td>CTR encryption plus an authentication tag over the ciphertext and context</td>
+    <td class="ok">Yes, built in</td><td class="ok">Chosen ✓</td></tr>
+</table>
+<div class="callout">Measured on the test laptop for 1 MB of data: GCM encrypts at <strong>1,015 MB/s</strong> against
+<strong>388 MB/s</strong> for CBC + HMAC (2.6× faster), and adds 28 bytes per message instead of 64. For very
+small messages CBC + HMAC is about 20 µs faster in PyCryptodome — a difference no user can notice.</div>
+
+<!-- ======================================================================= 5 SECURITY -->
+<h1><span class="num">5</span>Preventing Unauthorized Access</h1>
+<p class="lead">The project assumes an attacker who controls the network: they can read, change, drop, inject
+and replay packets, run a fake server, and try passwords. This is how each attack is stopped.</p>
+
+<table>
+  <tr><th style="width:21%">Attack</th><th>Defence</th><th style="width:18%">Proved by</th></tr>
+  <tr><td><strong>Eavesdropping</strong><br><span class="small muted">sniffing the Wi-Fi</span></td>
+    <td>Everything after the handshake is AES-256-GCM encrypted; the handshake itself contains nothing secret.</td>
+    <td>Sniffer demo, Wireshark</td></tr>
+  <tr><td><strong>Man-in-the-middle</strong><br><span class="small muted">a fake server</span></td>
+    <td>The server's key fingerprint is checked on first use and remembered; a different key is refused before
+    any secret is sent. Weak keys are rejected.</td><td>Fingerprint dialog, tests</td></tr>
+  <tr><td><strong>Tampering</strong><br><span class="small muted">changing bits</span></td>
+    <td>The GCM tag no longer matches, so the packet is dropped and logged; three bad packets end the connection.
+    Files are also checked with SHA-256.</td><td>Tamper demo</td></tr>
+  <tr><td><strong>Replay</strong><br><span class="small muted">re-sending old packets</span></td>
+    <td>Sequence numbers and timestamps inside the encryption; a new key every session; packets bound to their
+    direction.</td><td>Replay demo</td></tr>
+  <tr><td><strong>Password guessing</strong></td>
+    <td>Account locked for 60 s after 5 wrong passwords; unknown usernames get the same answer, so accounts
+    can't even be discovered.</td><td>Brute-force demo</td></tr>
+  <tr><td><strong>Stolen server database</strong></td>
+    <td>Only salted PBKDF2 password hashes; offline messages encrypted; the server's private key file is
+    passphrase-protected.</td><td>Tests</td></tr>
+  <tr><td><strong>Curious or hacked server</strong></td>
+    <td>End-to-end mode: the server relays ciphertext it cannot decrypt; the security code exposes a swapped key.</td>
+    <td>Server <code>--show-bodies</code> demo</td></tr>
+  <tr><td><strong>Stolen laptop</strong></td>
+    <td>Chat history encrypted with a key derived from the user's password.</td><td>Settings → Security</td></tr>
+</table>
+
+<h2>Proof 1 — what an eavesdropper captures</h2>
+<p>A "man-in-the-middle" proxy was placed between the users and the server, and the same secret was sent
+through SecureChat and through a deliberately insecure plain-text chat:</p>
+<figure><img class="console" src="docs/screenshots/10_sniffer.png" alt="Sniffer on SecureChat">
+  <figcaption><b>Figure 5.1</b> — Through SecureChat the attacker captures every packet, yet none contains the PIN and none is readable.</figcaption></figure>
+<figure><img class="console" src="docs/screenshots/11_insecure_sniffer.png" alt="Sniffer on insecure chat">
+  <figcaption><b>Figure 5.2</b> — Through the insecure chat the same attacker reads everything.</figcaption></figure>
+
+<h2>Proof 2 — every attack, one scorecard</h2>
+<figure><img class="console" src="docs/screenshots/12_scorecard.png" alt="Scorecard">
+  <figcaption><b>Figure 5.3</b> — <code>security_demo.run_all</code> performs the four attacks against a real server.
+  All are blocked.</figcaption></figure>
+
+<h2>Proof 3 — looking inside the app</h2>
+<div class="row">
+  <figure style="flex:1"><img src="docs/screenshots/08_message_info.png" alt="Message info">
+    <figcaption><b>Figure 5.4</b> — <em>Message info</em> shows the real encrypted packet: the end-to-end layer and the
+    network layer, each with its own nonce and tag.</figcaption></figure>
+  <figure style="flex:.82"><img src="docs/screenshots/09_security_code.png" alt="Security code">
+    <figcaption><b>Figure 5.5</b> — The end-to-end security code. If both users see the same 60 digits, nobody
+    swapped a key.</figcaption></figure>
+</div>
+<figure><img src="docs/screenshots/14_settings_security.png" alt="Settings security" style="max-width:62%">
+  <figcaption><b>Figure 5.6</b> — Settings → Security: the connection's algorithms, session key id (never the key
+  itself) and the server fingerprint.</figcaption></figure>
+
+<!-- ======================================================================= 6 PERFORMANCE -->
+<h1><span class="num">6</span>Performance Evaluation</h1>
+<p class="lead">Security is only useful if it doesn't make the app slow. Every operation was timed thousands of
+times on the test laptop (Intel Core i5-13500H, Python 3.13, PyCryptodome 4.5), reporting the mean of
+1,000 runs after warm-up.</p>
+
+<div class="tiles">
+  <div class="tile"><div class="v">1,015 MB/s</div><div class="l">AES-256-GCM encryption speed (1 MB data)</div></div>
+  <div class="tile"><div class="v">2.1 ms</div><div class="l">secure handshake, once per connection</div></div>
+  <div class="tile"><div class="v">+0.66 ms</div><div class="l">added to a message round trip by all security</div></div>
+  <div class="tile"><div class="v">13.5 ms</div><div class="l">password check at login (PBKDF2)</div></div>
+</div>
+
+<h2>AES modes and message sizes</h2>
+<figure><img class="graph" src="performance/graphs/aes_throughput_by_mode.png" alt="Throughput by mode">
+  <figcaption><b>Figure 6.1</b> — Throughput of the four AES modes from 16 bytes to 1 MB (log scales). GCM overtakes
+  CBC + HMAC from 16 KB and is 2.6× faster at 1 MB; ECB and CTR are faster only because they do not check
+  integrity.</figcaption></figure>
+
+<h2>Does a longer key cost more?</h2>
+<figure><img class="graph" src="performance/graphs/aes_key_sizes.png" alt="Key sizes">
+  <figcaption><b>Figure 6.2</b> — AES-128, -192 and -256 run within 1–8 % of each other because the processor does
+  AES in hardware. The strongest key size is practically free.</figcaption></figure>
+
+<h2>One-off costs: handshake and passwords</h2>
+<figure><img class="graph" src="performance/graphs/handshake_cost.png" alt="Handshake cost">
+  <figcaption><b>Figure 6.3</b> — The handshake costs about as much as encrypting 49 messages — once per connection.
+  The slowest step is the server's RSA private-key operation (0.62 ms).</figcaption></figure>
+<figure><img class="graph" src="performance/graphs/pbkdf2_rounds.png" alt="PBKDF2">
+  <figcaption><b>Figure 6.4</b> — PBKDF2: time per login grows with the number of rounds, and attacker guesses fall
+  at the same rate. 200,000 rounds keeps login under 15 ms.</figcaption></figure>
+
+<h2>Encrypted vs. plain-text chat on the network</h2>
+<p>The real SecureChat server was compared with an identical chat that sends plain text, timing a full round
+trip of a message from client to server and back (500 messages per size).</p>
+<figure><img class="graph" src="performance/graphs/network_localhost_latency.png" alt="Latency">
+  <figcaption><b>Figure 6.5</b> — A secure message takes about 0.7 ms against 0.03 ms in plain text. The extra
+  ~0.66 ms is constant per message — about 150 times below the ~100 ms people can perceive.</figcaption></figure>
+<figure><img class="graph" src="performance/graphs/network_localhost_scalability.png" alt="Scalability">
+  <figcaption><b>Figure 6.6</b> — With up to 50 clients chatting non-stop, one server process handles about 1,300
+  messages per second; latency grows evenly with load. Even if 50 users each sent a message every two seconds, that would use only
+  about 2 % of this capacity.</figcaption></figure>
+
+<h2>Summary</h2>
+<table>
+  <tr><th>Measurement</th><th>SecureChat</th><th>Plain text</th><th>Effect for the user</th></tr>
+  <tr><td>Message round trip (1 KB)</td><td>0.69 ms</td><td>0.03 ms</td><td>Not noticeable</td></tr>
+  <tr><td>Connecting</td><td>1.96 ms</td><td>0.10 ms</td><td>Once per session</td></tr>
+  <tr><td>Sending a 25 MB file (there and back)</td><td>0.58 s</td><td>0.31 s</td><td>Still under a second</td></tr>
+  <tr><td>CPU while encrypting non-stop</td><td>1 core of 16 (6 %)</td><td>—</td><td>Light</td></tr>
+  <tr><td>Extra memory while encrypting</td><td>≈2 MB</td><td>—</td><td>Negligible</td></tr>
+</table>
+<p class="muted small">All numbers were measured on one laptop. The same benchmark runs across the two laptops with
+<code>benchmark_network --remote &lt;server-ip&gt;</code>, where the Wi-Fi delay dominates and the share of
+encryption becomes even smaller.</p>
+
+<!-- ======================================================================= 7 TWO LAPTOPS -->
+<h1><span class="num">7</span>Running on Two Laptops</h1>
+<p class="lead">The project is designed to run across two laptops on the same Wi-Fi network — no command line
+needed.</p>
+<ol class="steps">
+  <li><strong>Install Python</strong> (3.11 or newer) on both laptops and copy the project folder to each.</li>
+  <li><strong>Laptop 1:</strong> double-click <code>run_server.bat</code>. The first run installs everything
+    automatically and asks for a passphrase that protects the server's private key. The window then shows
+    <em>"Clients on other PCs should connect to: 192.168.x.x:5555"</em> and the key fingerprint.</li>
+  <li><strong>Laptop 1, once:</strong> right-click <code>allow_firewall.bat</code> → <em>Run as administrator</em>,
+    so Windows Firewall lets the other laptop in.</li>
+  <li><strong>Laptop 2:</strong> double-click <code>run_client.bat</code>, press <em>Find server on LAN</em> (or type
+    the address), create an account and confirm the fingerprint matches the server window.</li>
+  <li><strong>Laptop 1:</strong> open <code>run_client.bat</code> too, create a second account — and chat.</li>
+</ol>
+<div class="callout warn"><strong>College Wi-Fi blocking it?</strong> Many campus networks stop laptops from talking to
+each other ("client isolation"). Turning on a phone hotspot and connecting both laptops to it solves this — the
+chat traffic stays between the laptops and uses no mobile data. Both laptops' clocks should also be in sync,
+because packets more than 60 seconds old are rejected as possible replays.</div>
+<p>For a laptop without Python, the project can be packaged into a standalone <strong>SecureChat.exe</strong>
+(with PyInstaller). A step-by-step deployment and troubleshooting guide is included in the repository
+(<code>docs/DEPLOYMENT.md</code>).</p>
+
+<!-- ======================================================================= 8 TESTING -->
+<h1><span class="num">8</span>Testing and Quality</h1>
+<p class="lead">The project includes <strong>287 automated tests</strong> that start real servers and clients and
+then behave like attackers.</p>
+<table>
+  <tr><th>Area</th><th>What is tested</th></tr>
+  <tr><td>Cryptography</td><td>AES-GCM round trips, unique nonces, tamper and wrong-key detection, RSA-OAEP, PBKDF2,
+    the insecure ECB pattern leak</td></tr>
+  <tr><td>Protocol</td><td>Message framing, the handshake, wrong fingerprints, weak keys, replayed, delayed and
+    reflected packets, oversized packets</td></tr>
+  <tr><td>Server and login</td><td>Password rules (including Hindi and other non-English passwords), lockout, no
+    username discovery, forged senders, 39 kinds of malformed request</td></tr>
+  <tr><td>Messaging</td><td>Chats, groups, ticks, typing, presence, offline delivery, reconnect after the network or
+    server drops</td></tr>
+  <tr><td>Files and history</td><td>Exact file transfer, SHA-256 rejection of altered files, path tricks, encrypted
+    history that refuses a wrong password</td></tr>
+  <tr><td>User interface</td><td>Login flow, fingerprint dialog, chat view, LAN discovery — driven automatically</td></tr>
+</table>
+<div class="tiles" style="grid-template-columns: repeat(3, 1fr)">
+  <div class="tile"><div class="v">287</div><div class="l">tests, all passing</div></div>
+  <div class="tile"><div class="v">92 %</div><div class="l">of the cryptography, protocol and server code exercised</div></div>
+  <div class="tile"><div class="v">4 / 4</div><div class="l">attack demos blocked</div></div>
+</div>
+<h2>Security review</h2>
+<p>A final code review searched specifically for key or nonce reuse, information leaking through errors or
+logs, thread-safety problems and missing input checks. It found and fixed, among others: passwords in Hindi or
+Chinese crashing registration; a file name trick that could disguise a <code>.exe</code> as a <code>.jpg</code>;
+file transfers left hanging when a sender disconnected; and unbounded server memory use under attack. Each fix
+has its own test.</p>
+
+<!-- ======================================================================= 9 LIMITATIONS -->
+<h1><span class="num">9</span>Limitations and Future Work</h1>
+<h2>Current limitations</h2>
+<ul>
+  <li><strong>No forward secrecy.</strong> The session secret is protected by the server's long-term RSA key. If
+    that key and its passphrase were ever stolen, recorded past sessions could be decrypted. Real messengers avoid
+    this with fresh Diffie–Hellman keys for every session.</li>
+  <li><strong>End-to-end mode covers one-to-one text chats.</strong> Group chats and files are encrypted on the
+    network, but the server can read them.</li>
+  <li><strong>The server knows who talks to whom</strong> (metadata), though not what end-to-end messages say.</li>
+  <li><strong>Trust on first use:</strong> a user who skips comparing the fingerprint on the very first connection
+    could be fooled once.</li>
+  <li><strong>Scale:</strong> one Python server process handles about 1,300 messages per second — plenty for a class,
+    not for millions of users.</li>
+</ul>
+<h2>Future work</h2>
+<ul>
+  <li>Use ephemeral elliptic-curve Diffie–Hellman (X25519) for forward secrecy, and the Signal protocol's Double
+    Ratchet for end-to-end chats, as WhatsApp does.</li>
+  <li>End-to-end encryption for groups and files.</li>
+  <li>Argon2id password hashing, and a server certificate instead of trust on first use.</li>
+  <li>A multi-process server, a mobile app, and disappearing messages.</li>
+</ul>
+
+<!-- ======================================================================= 10 CONCLUSION -->
+<h1><span class="num">10</span>Conclusion</h1>
+<p class="lead">SecureChat meets every task of the project.</p>
+<p>Two laptops chat through a polished, WhatsApp-style application while every packet on the network is encrypted
+and authenticated with <strong>AES-256-GCM</strong> under a fresh key agreed with <strong>RSA-2048-OAEP</strong> and
+<strong>HKDF</strong>. Received packets are decrypted only after their authentication tag is verified, so modified,
+replayed and forged packets are rejected. Unauthorized access is prevented at every level: hashed passwords with
+lockout, server fingerprint checking against man-in-the-middle attacks, encrypted storage, and an optional
+end-to-end mode that even the server cannot read. Live demonstrations show eavesdropping, tampering, replay and
+password guessing all failing.</p>
+<p>The performance evaluation shows the protection is effectively free for users: AES-256-GCM runs at about
+1 GB/s, the handshake costs 2 ms once per connection, and the complete secure protocol adds about two-thirds of a
+millisecond to each message.</p>
+<p>The most important lesson of the project is that <strong>encryption alone is not enough</strong>: it is
+authenticated encryption, careful key and nonce handling, and protection against replay and impersonation that
+together make communication secure.</p>
+
+<!-- ======================================================================= REFERENCES -->
+<h1>References</h1>
+<ol class="small">
+  <li>NIST, <em>FIPS 197: Advanced Encryption Standard (AES)</em>, 2001 (updated 2023).</li>
+  <li>M. Dworkin, <em>NIST SP 800-38D: Galois/Counter Mode (GCM) and GMAC</em>, NIST, 2007.</li>
+  <li>K. Moriarty et al., <em>RFC 8017: PKCS #1 — RSA Cryptography Specifications v2.2</em>, IETF, 2016.</li>
+  <li>M. Bellare, P. Rogaway, "Optimal Asymmetric Encryption," <em>EUROCRYPT '94</em>, Springer, 1995.</li>
+  <li>H. Krawczyk, P. Eronen, <em>RFC 5869: HMAC-based Key Derivation Function (HKDF)</em>, IETF, 2010.</li>
+  <li>K. Moriarty et al., <em>RFC 8018: PKCS #5 — Password-Based Cryptography v2.1</em>, IETF, 2017.</li>
+  <li>E. Rescorla, <em>RFC 8446: The Transport Layer Security (TLS) Protocol Version 1.3</em>, IETF, 2018.</li>
+  <li>E. Barker, <em>NIST SP 800-57 Part 1 Rev. 5: Recommendation for Key Management</em>, NIST, 2020.</li>
+  <li>H. Böck et al., "Nonce-Disrespecting Adversaries: Practical Forgery Attacks on GCM in TLS," <em>USENIX WOOT</em>, 2016.</li>
+  <li>WhatsApp, <em>WhatsApp Encryption Overview</em> (technical white paper); M. Marlinspike, T. Perrin, <em>The X3DH
+    Key Agreement Protocol</em> and <em>The Double Ratchet Algorithm</em>, Signal, 2016.</li>
+  <li>W. Stallings, <em>Cryptography and Network Security: Principles and Practice</em>, 8th ed., Pearson, 2020.</li>
+  <li>OWASP Foundation, <em>Password Storage Cheat Sheet</em>; PyCryptodome and Qt for Python documentation.</li>
+</ol>
+
+<h2>Appendix — how to run</h2>
+<table class="small">
+  <tr><th style="width:42%">Command</th><th>What it does</th></tr>
+  <tr><td><code>run_server.bat</code></td><td>Starts the server (first run installs everything)</td></tr>
+  <tr><td><code>run_client.bat</code></td><td>Starts the chat app (run it twice for two users on one laptop)</td></tr>
+  <tr><td><code>python -m pytest</code></td><td>Runs the 287 automated tests</td></tr>
+  <tr><td><code>python -m security_demo.run_all</code></td><td>Runs the attack demonstrations and prints the scorecard</td></tr>
+  <tr><td><code>python -m performance.benchmark_crypto</code></td><td>Cryptography benchmarks and graphs</td></tr>
+  <tr><td><code>python -m performance.benchmark_network</code></td><td>Encrypted vs. plain-text network benchmarks</td></tr>
+</table>
+<p class="muted small">The repository also contains a detailed technical report, 52 viva questions with answers, a
+10-minute demo script and a deployment guide in the <code>docs</code> folder.</p>
+
+</body>
+</html>

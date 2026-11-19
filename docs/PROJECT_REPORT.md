@@ -762,8 +762,9 @@ headroom for 50 very active users.
 
 ## 11. Screenshots
 
-> Save each screenshot under `docs/screenshots/` with the file name shown; it then appears here
-> automatically. (Windows: **Win + Shift + S** to capture a window.)
+> These screenshots are taken from the real application by `python -m docs.tools.make_screenshots`
+> (users, messages, a group and files are created on a throwaway server). Figure 11.13 is the only one to
+> capture by hand: save a Wireshark screenshot as `docs/screenshots/13_wireshark.png`.
 
 ![Login screen](screenshots/01_login.png)
 

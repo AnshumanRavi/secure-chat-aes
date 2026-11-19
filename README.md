@@ -2,7 +2,7 @@
 
 A client–server chat application in **Python** that uses **socket programming** and **PyCryptodome** to encrypt every message with **AES-256-GCM**. It has a **WhatsApp-style desktop interface** and runs across **two PCs or laptops** on the same network.
 
-📄 [Project report](docs/PROJECT_REPORT.md) · [Viva questions](docs/VIVA_QUESTIONS.md) · [Demo script](docs/DEMO_SCRIPT.md) · [Two-PC setup](docs/DEPLOYMENT.md) · [Performance report](performance/PERFORMANCE_REPORT.md)
+📕 **[Project report (PDF)](docs/SecureChat_Project_Report.pdf)** · 📄 [Technical report](docs/PROJECT_REPORT.md) · [Viva questions](docs/VIVA_QUESTIONS.md) · [Demo script](docs/DEMO_SCRIPT.md) · [Two-PC setup](docs/DEPLOYMENT.md) · [Performance report](performance/PERFORMANCE_REPORT.md)
 
 ![SecureChat main window](docs/screenshots/04_main_window.png)
 
@@ -81,7 +81,7 @@ python -m client.gui.main              (terminal 2, and again in terminal 3)
 | **Attacker's view** | **Security scorecard** | **Group chat** |
 | ![Sniffer](docs/screenshots/10_sniffer.png) | ![Scorecard](docs/screenshots/12_scorecard.png) | ![Group](docs/screenshots/06_group_chat.png) |
 
-*(Save screenshots in `docs/screenshots/` with these names — the full list is in section 11 of the [project report](docs/PROJECT_REPORT.md#11-screenshots).)*
+*(Screenshots are taken from the real app by `python -m docs.tools.make_screenshots`; `python -m docs.tools.build_pdf` rebuilds the PDF report.)*
 
 ---
 
