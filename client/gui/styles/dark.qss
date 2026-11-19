@@ -1,0 +1,465 @@
+/*
+ * SecureChat - dark theme (WhatsApp Desktop dark colours)
+ *
+ * Loaded AFTER light.qss, so it only needs to override colours.
+ *
+ *   app background  #111B21     panels/headers  #202C33     inputs  #2A3942
+ *   chat background #0B141A     outgoing bubble #005C4B     incoming #202C33
+ *   text            #E9EDEF     secondary       #8696A0     accent  #00A884
+ */
+
+* {
+    color: #E9EDEF;
+}
+
+QToolTip {
+    background: #E9EDEF;
+    color: #111B21;
+}
+
+QScrollBar::handle:vertical {
+    background: rgba(233, 237, 239, 0.16);
+}
+
+QScrollBar::handle:vertical:hover {
+    background: rgba(233, 237, 239, 0.30);
+}
+
+/* login */
+QFrame#Card {
+    background: #202C33;
+}
+
+QLabel#Title, QLabel#ServerText, QCheckBox {
+    color: #D1D7DB;
+}
+
+QLabel#Tagline, QLabel[role="field-label"], QLabel[role="status"], QPushButton#TabButton {
+    color: #8696A0;
+}
+
+QPushButton#TabButton:hover {
+    color: #D1D7DB;
+}
+
+QFrame#TabBar {
+    border-bottom: 1px solid #2A3942;
+}
+
+QLineEdit {
+    background: #2A3942;
+    border: 1px solid #2A3942;
+    color: #E9EDEF;
+}
+
+QLineEdit:hover {
+    border: 1px solid #3B4A54;
+}
+
+QLineEdit:focus {
+    background: #2A3942;
+    border: 1px solid #00A884;
+}
+
+QLineEdit:disabled {
+    background: #182229;
+    border: 1px solid #182229;
+    color: #667781;
+}
+
+QLineEdit[error="true"] {
+    background: #3A1E26;
+    border: 1px solid #F15C6D;
+}
+
+QLabel[role="error"] {
+    color: #F15C6D;
+}
+
+QLabel[role="status-ok"], QPushButton#LinkButton, QLabel#InfoSection, QLabel#SectionLabel,
+QLabel#CryptoHeading {
+    color: #00A884;
+}
+
+QFrame#ServerRow {
+    background: #182229;
+}
+
+QCheckBox::indicator, QListWidget#MemberPicker::indicator {
+    background: #202C33;
+}
+
+QPushButton#SecondaryButton {
+    background: transparent;
+    color: #00A884;
+    border: 1px solid #3B4A54;
+}
+
+QPushButton#SecondaryButton:hover {
+    background: #2A3942;
+}
+
+QPushButton#PrimaryButton, QPushButton#DangerButton {
+    color: #111B21;
+}
+
+QPushButton#PrimaryButton:disabled {
+    background: #1F5A4D;
+    color: #8696A0;
+}
+
+QLabel#Footer, QLabel[role="hint"], QLabel#SessionInfo {
+    color: #667781;
+}
+
+/* dialogs */
+QDialog#FingerprintDialog, QDialog#InfoDialog, QDialog#SettingsDialog {
+    background: #111B21;
+}
+
+QLabel#DialogTitle, QLabel#InfoLabel, QLabel#CryptoValue, QLabel#InfoText, QLabel#InfoTitle,
+QLabel#MemberName, QLabel#ChatTitle, QLabel#SidebarTitle, QLabel#BannerTitle {
+    color: #E9EDEF;
+}
+
+QLabel#DialogText, QLabel#CryptoName, QLabel#EncryptionText {
+    color: #AEBAC1;
+}
+
+QLabel#Fingerprint {
+    background: #202C33;
+    color: #E9EDEF;
+}
+
+QLabel#Fingerprint[danger="true"] {
+    background: #3A1E26;
+    color: #F15C6D;
+}
+
+QLabel#InfoPreviewOut {
+    background: #005C4B;
+}
+
+QLabel#InfoPreviewIn {
+    background: #202C33;
+}
+
+QLabel#InfoValue, QLabel#CryptoNote, QLabel#InfoSubtitle, QLabel#MemberAbout, QLabel#ChatStatus,
+QLabel#IntroText, QLabel#IntroFooter, QLabel#BannerText, QLabel#EmojiCategoryTitle {
+    color: #8696A0;
+}
+
+QFrame#CryptoBox {
+    background: #182229;
+    border: 1px solid #2A3942;
+}
+
+/* main window */
+QWidget#Sidebar, QWidget#SidebarPage, QFrame#SearchRow, QListView#ChatList,
+QLabel[role="empty-state"], QLabel#SectionLabel {
+    background: #111B21;
+}
+
+QFrame#PanelHeader, QFrame#InputBar, QLabel#LeftNotice {
+    background: #202C33;
+}
+
+QLabel#IntroTitle {
+    color: #E9EDEF;
+}
+
+QPushButton#IconButton:hover {
+    background: rgba(233, 237, 239, 0.08);
+}
+
+QPushButton#IconButton:pressed {
+    background: rgba(233, 237, 239, 0.14);
+}
+
+QLineEdit#SearchBox, QLineEdit#SearchBox:hover, QLineEdit#SearchBox:focus {
+    background: #202C33;
+    color: #E9EDEF;
+}
+
+QPushButton#Chip {
+    background: #202C33;
+    color: #8696A0;
+}
+
+QPushButton#Chip:hover {
+    background: #2A3942;
+}
+
+QPushButton#Chip:checked {
+    background: #0A332C;
+    color: #00A884;
+}
+
+QFrame#NewChatHeader {
+    background: #202C33;
+}
+
+QSplitter#MainSplitter::handle {
+    background: #2A3942;
+}
+
+QMenu {
+    background: #233138;
+    border: 1px solid #2A3942;
+}
+
+QMenu::item {
+    color: #D1D7DB;
+}
+
+QMenu::item:selected {
+    background: #182229;
+}
+
+QMenu::item:disabled {
+    color: #667781;
+}
+
+QMenu::separator {
+    background: #2A3942;
+}
+
+QLabel#Toast {
+    background: #E9EDEF;
+    color: #111B21;
+}
+
+/* conversation */
+QLabel#BubbleText {
+    color: #E9EDEF;
+    selection-background-color: #0A6E5B;
+    selection-color: #E9EDEF;
+}
+
+QLabel#DateChip, QLabel#SystemChip {
+    background: #182229;
+    color: #8696A0;
+}
+
+QLabel#EncryptionNotice {
+    background: #182229;
+    color: #FFD279;
+}
+
+QPushButton#ScrollDownButton {
+    background: #202C33;
+}
+
+QPushButton#ScrollDownButton:hover {
+    background: #2A3942;
+}
+
+QLabel#ScrollBadge {
+    background: #00A884;
+    color: #111B21;
+}
+
+QPlainTextEdit#MessageInput {
+    background: #2A3942;
+    color: #E9EDEF;
+    selection-background-color: #0A6E5B;
+    selection-color: #E9EDEF;
+}
+
+QFrame#EmojiPicker, QFrame#EmojiTabBar, QScrollArea#EmojiScroll, QWidget#EmojiGrid {
+    background: #202C33;
+    border-color: #2A3942;
+}
+
+QPushButton#EmojiTab:hover, QPushButton#EmojiButton:hover {
+    background: #2A3942;
+}
+
+/* banner */
+QFrame#ConnectionBanner {
+    background: #3B3218;
+    border-bottom: 1px solid #5C4B1A;
+}
+
+/* groups */
+QFrame#GroupInfo, QScrollArea#GroupInfoScroll, QWidget#GroupInfoBody {
+    background: #0B141A;
+    border-left: 1px solid #2A3942;
+}
+
+QFrame#InfoCard {
+    background: #111B21;
+}
+
+QFrame#MemberRow:hover {
+    background: #202C33;
+}
+
+QLabel#AdminBadge {
+    background: #0A332C;
+    color: #00A884;
+}
+
+QPushButton#DangerLink {
+    color: #F15C6D;
+}
+
+QPushButton#DangerLink:hover {
+    background: #2B1A1F;
+}
+
+QPushButton#Swatch:checked {
+    border: 2px solid #E9EDEF;
+}
+
+QListWidget#MemberPicker {
+    background: #111B21;
+    border: 1px solid #2A3942;
+}
+
+QListWidget#MemberPicker::item {
+    border-bottom: 1px solid #202C33;
+    color: #E9EDEF;
+}
+
+QListWidget#MemberPicker::item:hover, QListWidget#MemberPicker::item:selected {
+    background: #202C33;
+    color: #E9EDEF;
+}
+
+/* files */
+QLabel#DropOverlay {
+    background: rgba(0, 168, 132, 0.15);
+    color: #00A884;
+}
+
+/* settings (styled in light.qss) */
+QListWidget#SettingsNav {
+    background: #111B21;
+    border-right: 1px solid #2A3942;
+}
+
+QListWidget#SettingsNav::item {
+    color: #D1D7DB;
+}
+
+QListWidget#SettingsNav::item:selected, QListWidget#SettingsNav::item:hover {
+    background: #202C33;
+    color: #E9EDEF;
+}
+
+QStackedWidget#SettingsPages, QScrollArea#SettingsScroll, QWidget#SettingsPage {
+    background: #0B141A;
+}
+
+QFrame#SettingsCard {
+    background: #111B21;
+}
+
+QLabel#SettingsHeading {
+    color: #E9EDEF;
+}
+
+QLabel#SettingsLabel {
+    color: #D1D7DB;
+}
+
+QLabel#SettingsHint {
+    color: #8696A0;
+}
+
+QRadioButton {
+    color: #D1D7DB;
+}
+
+QRadioButton::indicator {
+    border: 2px solid #8696A0;
+    background: #111B21;
+}
+
+QRadioButton::indicator:checked {
+    border: 2px solid #00A884;
+    background: qradialgradient(cx:0.5, cy:0.5, radius:0.5, fx:0.5, fy:0.5,
+                                stop:0 #00A884, stop:0.55 #00A884, stop:0.6 #111B21, stop:1 #111B21);
+}
+
+QPlainTextEdit#RawDump {
+    background: #0B141A;
+    color: #AEBAC1;
+    border: 1px solid #2A3942;
+}
+
+/* in-chat search + global search */
+QFrame#ChatSearchBar, QFrame#GlobalSearchHeader {
+    background: #202C33;
+}
+
+QLabel#SearchCount {
+    color: #8696A0;
+}
+
+QListWidget#SearchResults {
+    background: #111B21;
+}
+
+QListWidget#SearchResults::item {
+    border-bottom: 1px solid #202C33;
+}
+
+QListWidget#SearchResults::item:hover, QListWidget#SearchResults::item:selected {
+    background: #202C33;
+}
+
+QLabel#ResultTitle {
+    color: #E9EDEF;
+}
+
+QLabel#ResultTime, QLabel#ResultSnippet {
+    color: #8696A0;
+}
+
+QPushButton#WallpaperSwatch {
+    border: 2px solid #3B4A54;
+}
+
+QLabel#SettingsLabel {
+    color: #00A884;
+}
+
+QFrame#ChatSearchBar {
+    border-top: 1px solid #2A3942;
+}
+
+QLabel#SecurityChip {
+    background: #3B3218;
+    color: #FFD279;
+}
+
+QLabel#SecurityDigits {
+    color: #E9EDEF;
+}
+
+QLabel#VerifiedLabel {
+    color: #00A884;
+}
+
+/* login: "Find server on LAN" picker */
+QListWidget#ServerPicker {
+    background: #111B21;
+    border: 1px solid #2A3942;
+}
+
+QListWidget#ServerPicker::item {
+    border-bottom: 1px solid #202C33;
+    color: #E9EDEF;
+}
+
+QListWidget#ServerPicker::item:hover {
+    background: #202C33;
+    color: #E9EDEF;
+}
+
+QListWidget#ServerPicker::item:selected {
+    background: #005C4B;
+    color: #E9EDEF;
+}

@@ -1,0 +1,4 @@
+system,step,repeats,mean_ms,std_ms,median_ms,p95_ms
+plain,TCP connect,20,0.104175,0.0190681,0.09775,0.15
+secure,TCP connect + RSA-OAEP/HKDF handshake,20,1.99256,0.0808574,1.96135,2.1695
+secure,Login (PBKDF2 password check on the server),20,21.0568,2.19527,21.2273,25.1909

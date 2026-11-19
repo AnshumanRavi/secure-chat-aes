@@ -1,0 +1,5 @@
+mode,seconds,messages,throughput_mb_per_s,cpu_percent_of_one_core,cpu_percent_of_machine,baseline_rss_mb,peak_rss_mb
+GCM,3,3035,1011.66,99.9997,6.24998,75.0977,77.1328
+CBC+HMAC,3,1158,385.973,101.035,6.31466,75.1055,77.1328
+CTR,3,4923,1640.89,96.8688,6.0543,75.1094,76.1328
+ECB,3,5808,1935.79,98.9477,6.18423,75.1094,77.1367

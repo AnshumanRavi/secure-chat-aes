@@ -1,0 +1,10 @@
+{
+  "server_host": "0.0.0.0",
+  "client_host": "127.0.0.1",
+  "port": 5555,
+  "max_message_size": 1048576,
+  "max_file_size": 26214400,
+  "session_timeout": 300,
+  "heartbeat_interval": 30,
+  "max_clock_skew": 60
+}

@@ -1,0 +1,8 @@
+operation,who,iterations,mean_ms,std_ms
+RSA-2048 key pair generation,"server, first start only",10,212.735,102.262
+RSA-OAEP encrypt session secret,"client, per connection",1000,0.0671525,0.030222
+RSA-OAEP decrypt session secret,"server, per connection",1000,0.623468,0.113887
+HKDF-SHA256 session key derivation,"both, per connection",1000,0.0270077,0.00736977
+Complete handshake over a local socket,"both, per connection",200,2.1032,1.17425
+AES-256-GCM encrypt one 1 KB chat message,reference,1000,0.043042,0.0144544
+ECDH P-256 + HKDF end-to-end pair key,"client, once per contact",200,0.201183,0.0200871

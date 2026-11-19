@@ -1,0 +1,28 @@
+{
+  "mode": "localhost",
+  "server_address": "127.0.0.1",
+  "client": {
+    "date": "2026-11-19 00:30",
+    "cpu": "13th Gen Intel(R) Core(TM) i5-13500H",
+    "cpu_cores_physical": 12,
+    "cpu_cores_logical": 16,
+    "ram_gb": 15.7,
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.13.0",
+    "pycryptodome": "4.5.0",
+    "pyside6": "6.12.0",
+    "matplotlib": "3.11.2"
+  },
+  "server": {
+    "date": "2026-11-19 00:30",
+    "cpu": "13th Gen Intel(R) Core(TM) i5-13500H",
+    "cpu_cores_physical": 12,
+    "cpu_cores_logical": 16,
+    "ram_gb": 15.7,
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.13.0",
+    "pycryptodome": "4.5.0",
+    "pyside6": "6.12.0",
+    "matplotlib": "3.11.2"
+  }
+}
