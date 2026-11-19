@@ -18,6 +18,8 @@ Under the guidance of
 [College / University Name]
 [Month Year]
 
+Source code: [github.com/AnshumanRavi/secure-chat-aes](https://github.com/AnshumanRavi/secure-chat-aes)
+
 </div>
 
 ---
@@ -947,3 +949,5 @@ python -m performance.make_report
 ```
 
 Two-PC set-up, firewall rules and troubleshooting: `docs/DEPLOYMENT.md`.
+
+Source code: [github.com/AnshumanRavi/secure-chat-aes](https://github.com/AnshumanRavi/secure-chat-aes)

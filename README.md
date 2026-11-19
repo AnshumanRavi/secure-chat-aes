@@ -8,15 +8,20 @@ A client–server chat application in **Python** that uses **socket programming*
 
 ---
 
+**Repository:** [github.com/AnshumanRavi/secure-chat-aes](https://github.com/AnshumanRavi/secure-chat-aes)
+
+---
+
 ## ⚡ Quick Start
 
 ### On one PC (fastest way to try it)
 
 1. Install **Python 3.11 or newer** from [python.org](https://www.python.org/downloads/) — tick **"Add python.exe to PATH"**.
-2. Double-click **`run_server.bat`**. The first run creates a private Python environment (`.venv`) and installs the requirements (needs internet once, 2–3 minutes), then asks you to choose a **passphrase** for the server's key.
-3. Double-click **`run_client.bat`** — twice, for two users.
-4. In each window: **Find server on LAN** (or server `127.0.0.1`, port `5555`) → **Create account** (e.g. `alice` and `bob`) → compare the fingerprint with the server window → **It matches – connect**.
-5. Start chatting.
+2. Get the code: `git clone https://github.com/AnshumanRavi/secure-chat-aes.git` (or *Code → Download ZIP* on GitHub).
+3. Double-click **`run_server.bat`**. The first run creates a private Python environment (`.venv`) and installs the requirements (needs internet once, 2–3 minutes), then asks you to choose a **passphrase** for the server's key.
+4. Double-click **`run_client.bat`** — twice, for two users.
+5. In each window: **Find server on LAN** (or server `127.0.0.1`, port `5555`) → **Create account** (e.g. `alice` and `bob`) → compare the fingerprint with the server window → **It matches – connect**.
+6. Start chatting.
 
 ### On two PCs
 
